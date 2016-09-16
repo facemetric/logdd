@@ -1,0 +1,29 @@
+formats:
+  nginx_complex_plus:
+    pattern: '$remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent" $request_time $upstream_cache_status [$upstream_response_time]'
+    variables:
+      remote_addr: '\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}'
+      time_local: '[\d\w\W/\:]{18,20} [-\+]\d{4}'
+      request:
+        pattern: '$method $url HTTP/$http_version'
+        variables:
+          method: '\w{3,}'
+          url: '[-/\+\d\w\W]+'
+          http_version: '[12]\.\d'
+      status: '[0-5]\d\d'
+      body_bytes_sent: '\d*'
+      http_referer: '[- \w\W\d/\.]*'
+      http_user_agent: '[- \w\W\d/\.\(\)]*'
+      request_time: '\d*\.\d*'
+      upstream_cache_status: '(?:\-|HIT|BYPASS|EXPIRED|MISS)'
+      upstream_response_time: '\d*\.\d*'
+      remote_user: '[-\w_\d]*'
+metrics:
+  response_code_distribution:
+    type: 'counter'
+    config:
+      name: 'response_code.$status'
+logs:
+  - file: './test/test_nginx.log'
+    metric: 'response_code_distribution'
+    format: 'nginx_complex_plus'
