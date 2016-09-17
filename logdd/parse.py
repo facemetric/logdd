@@ -63,6 +63,8 @@ class FormatSpec(object):
         self.pattern = re.compile(pattern)
 
     def parse(self, line):
+        if not line:
+            return None
         if line[-1] == '\n':
             line = line[:-1]
         match = self.pattern.match(line)

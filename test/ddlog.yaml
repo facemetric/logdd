@@ -23,7 +23,11 @@ metrics:
     type: 'counter'
     config:
       name: 'response_code.$status'
+      tags:
+        - 'method.$request__method'
 logs:
   - file: './test/test_nginx.log'
     metric: 'response_code_distribution'
     format: 'nginx_complex_plus'
+    tags:
+      - 'test_data'
